@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mattingly Media | Visual Storytelling</title>
+  <meta name="description" content="Ty Mattingly — Videographer, Editor, Photographer & Storyteller. 3x Regional Emmy Award Winner. ESPN+ Cinematographer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #00D2BE;
+      --teal-mid:   #00B4A0;
+      --teal-dark:  #007A6E;
+      --bg:         #050A0E;
+      --bg-panel:   #0D1B24;
+      --bg-card:    #0F2030;
+      --white:      #F0F8FF;
+      --grey:       #5B8FA0;
+      --light-grey: #B0D4E0;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed; top: 0; left: 0;
+      width: 12px; height: 12px;
+      background: var(--teal);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.25s, height 0.25s, opacity 0.2s;
+      opacity: 0.5;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: transparent;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(5,10,14,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,210,190,0.12);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--teal); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,210,190,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(0,180,160,0.05) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,210,190,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,210,190,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+    }
+    .hero-line {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--teal) 30%, var(--teal-mid) 70%, transparent);
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1.2rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 14vw, 13rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+    .hero-title .teal { color: var(--teal); }
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--grey);
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .hero-stats {
+      display: flex; gap: 3rem;
+      margin-top: 3.5rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+    .hero-stat { display: flex; flex-direction: column; gap: 0.3rem; }
+    .hero-stat-n {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: var(--teal);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+    .hero-stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; right: 3rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--grey);
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.3s forwards;
+    }
+    .hero-scroll::before {
+      content: '';
+      display: block;
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--teal));
+      margin: 0 auto 0.8rem;
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: 7rem 3rem; }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg); }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 6rem;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about-left { position: sticky; top: 8rem; }
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--bg-panel);
+      border: 1px solid rgba(0,210,190,0.15);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .about-photo-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.8rem;
+      color: var(--grey);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .about-photo-placeholder svg { opacity: 0.3; }
+    .about-photo::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(to top, var(--bg-panel), transparent);
+    }
+    .about-right { padding-top: 4rem; }
+    .about-bio {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--light-grey);
+      font-weight: 300;
+      margin-top: 2rem;
+    }
+    .about-bio p + p { margin-top: 1.2rem; }
+    .about-awards {
+      margin-top: 3rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .award-item {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg-panel);
+      border-left: 3px solid var(--teal);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .award-item:hover { background: var(--bg-card); transform: translateX(4px); }
+    .award-n {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--teal);
+      line-height: 1;
+      min-width: 2.5rem;
+    }
+    .award-text { font-size: 0.85rem; color: var(--light-grey); line-height: 1.4; }
+    .award-text strong { display: block; color: var(--white); font-weight: 500; }
+    .skills-row {
+      margin-top: 2.5rem;
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
+    }
+    .skill-tag {
+      padding: 0.4rem 1rem;
+      background: rgba(0,210,190,0.08);
+      border: 1px solid rgba(0,210,190,0.25);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio { background: var(--bg-panel); }
+    .portfolio-header {
+      max-width: 1200px; margin: 0 auto 4rem;
+    }
+    .portfolio-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: rgba(0,210,190,0.1);
+    }
+    .portfolio-item {
+      background: var(--bg);
+      aspect-ratio: 16/10;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .portfolio-item.featured {
+      grid-column: span 2;
+      aspect-ratio: 16/9;
+    }
+    .portfolio-thumb {
+      width: 100%; height: 100%;
+      background: var(--bg-card);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.5s ease;
+    }
+    .portfolio-item:hover .portfolio-thumb { transform: scale(1.04); }
+    .portfolio-thumb-icon {
+      width: 52px; height: 52px;
+      border: 1px solid rgba(0,210,190,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--teal);
+      opacity: 0.5;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .portfolio-item:hover .portfolio-thumb-icon { opacity: 1; transform: scale(1.1); }
+    .portfolio-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,10,14,0.95) 0%, rgba(5,10,14,0.3) 50%, transparent 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-overlay-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.4rem;
+    }
+    .portfolio-overlay-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .portfolio-overlay-desc {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--light-grey);
+      line-height: 1.5;
+    }
+    /* Always-visible label on portfolio items */
+    .portfolio-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2.5rem 1.5rem 1rem;
+      background: linear-gradient(to top, rgba(5,10,14,0.9) 0%, transparent 100%);
+    }
+    .portfolio-label-cat {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .portfolio-label-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+    }
+
+    /* ── SERVICES ── */
+    #services { background: var(--bg); }
+    .services-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .services-left { position: sticky; top: 8rem; }
+    .services-intro {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--grey);
+      font-weight: 300;
+    }
+    .services-list { display: flex; flex-direction: column; }
+    .service-row {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(0,210,190,0.1);
+      align-items: start;
+      transition: background 0.2s;
+    }
+    .service-row:first-child { border-top: 1px solid rgba(0,210,190,0.1); }
+    .service-num {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--teal-dark);
+      padding-top: 0.15rem;
+    }
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+      transition: color 0.2s;
+    }
+    .service-row:hover .service-name { color: var(--teal); }
+    .service-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--grey);
+      font-weight: 300;
+      max-width: 500px;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg-panel); }
+    .contact-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .contact-left { padding-top: 1rem; }
+    .contact-tagline {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--grey);
+      font-weight: 300;
+    }
+    .contact-info { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-info-item {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--light-grey);
+    }
+    .contact-info-item svg { color: var(--teal); flex-shrink: 0; }
+
+    /* FORM */
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .form-input, .form-textarea, .form-select {
+      background: var(--bg-card);
+      border: 1px solid rgba(0,210,190,0.15);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 300;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      appearance: none;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,210,190,0.08);
+    }
+    .form-textarea { resize: vertical; min-height: 130px; }
+    .form-select option { background: var(--bg-card); }
+    .form-btn {
+      margin-top: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--teal);
+      color: var(--bg);
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      cursor: none;
+      transition: background 0.2s, transform 0.15s;
+      align-self: flex-start;
+    }
+    .form-btn:hover { background: var(--teal-mid); transform: translateY(-2px); }
+    .form-btn:active { transform: translateY(0); }
+    .form-success {
+      display: none;
+      padding: 1rem 1.2rem;
+      background: rgba(0,210,190,0.1);
+      border: 1px solid rgba(0,210,190,0.3);
+      font-size: 0.85rem;
+      color: var(--teal);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid rgba(0,210,190,0.1);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+    .footer-logo span { color: var(--teal); }
+    .footer-copy {
+      font-size: 0.7rem;
+      color: var(--grey);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      section { padding: 5rem 1.5rem; }
+      #hero { padding: 0 1.5rem 4rem; }
+      .about-inner, .services-inner, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .about-left { position: static; }
+      .services-left { position: static; }
+      .portfolio-grid { grid-template-columns: 1fr 1fr; }
+      .portfolio-item.featured { grid-column: span 2; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.8rem; flex-wrap: wrap; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+    @media (max-width: 600px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .portfolio-item.featured { grid-column: span 1; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Nav -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">MATTINGLY<span>.</span>MEDIA</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-line"></div>
+
+    <p class="hero-eyebrow">Mattingly Media &nbsp;·&nbsp; Visual Storytelling</p>
+    <h1 class="hero-title">
+      TY<br>
+      <span class="teal">MATTINGLY</span>
+    </h1>
+    <p class="hero-sub">Videographer &nbsp;·&nbsp; Editor &nbsp;·&nbsp; Photographer &nbsp;·&nbsp; Storyteller</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-n">3×</span>
+        <span class="hero-stat-label">Regional Emmy<br>Award Winner</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">2×</span>
+        <span class="hero-stat-label">ASPA Broadcast<br>Editor of the Year</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">ESPN+</span>
+        <span class="hero-stat-label">College Football<br>Playoff Cinematographer</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-n">3+</span>
+        <span class="hero-stat-label">Years<br>Professional</span>
+      </div>
+    </div>
+
+    <span class="hero-scroll">Scroll</span>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-left reveal">
+        <p class="section-label">Who I Am</p>
+        <h2 class="section-title">ABOUT<br><span style="color:var(--teal)">TY</span></h2>
+        <div class="about-photo">
+          <div class="about-photo-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Add Your Photo</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="reveal" style="transition-delay:0.15s">
+          <div class="about-bio">
+            <p>I handle every phase of production myself — from concept and pre-production through shooting and final edit. Over 3 years of professional work, I've been freelanced by universities, professional athletes, and multi-million dollar organizations.</p>
+            <p>I'm a 3× Regional Emmy Award winner and 2× ASPA Broadcast Editor of the Year. My work has aired on ESPN+ and I've built a track record of delivering broadcast-quality results across a wide range of clients and formats.</p>
+          </div>
+        </div>
+        <div class="about-awards reveal" style="transition-delay:0.25s">
+          <div class="award-item">
+            <span class="award-n">3×</span>
+            <div class="award-text">
+              <strong>Regional Emmy Award Winner</strong>
+              Recognized for excellence in broadcast journalism and production
+            </div>
+          </div>
+          <div class="award-item">
+            <span class="award-n">2×</span>
+            <div class="award-text">
+              <strong>ASPA Broadcast Editor of the Year</strong>
+              Associated Scholastic Press Association — top editing honors
+            </div>
+          </div>
+          <div class="award-item">
+            <span class="award-n" style="font-size:1.1rem;padding-top:0.3rem">ESPN+</span>
+            <div class="award-text">
+              <strong>Inside the College Football Playoff</strong>
+              Cinematographer on one of ESPN+'s flagship docuseries
+            </div>
+          </div>
+        </div>
+        <div class="skills-row reveal" style="transition-delay:0.35s">
+          <span class="skill-tag">Videography</span>
+          <span class="skill-tag">Editing</span>
+          <span class="skill-tag">Photography</span>
+          <span class="skill-tag">Cinematography</span>
+          <span class="skill-tag">Storytelling</span>
+          <span class="skill-tag">Color Grade</span>
+          <span class="skill-tag">Post Production</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio">
+    <div class="portfolio-header reveal">
+      <p class="section-label">Selected Work</p>
+      <h2 class="section-title">PORTFOLIO</h2>
+    </div>
+    <div class="portfolio-grid reveal" style="transition-delay:0.1s">
+
+      <!-- Featured: Amber Anning -->
+      <div class="portfolio-item featured" onclick="openVideo(this)" data-youtube="">
+        <div class="portfolio-thumb">
+          <div class="portfolio-thumb-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="portfolio-label">
+          <p class="portfolio-label-cat">Personal Brand · Videographer</p>
+          <p class="portfolio-label-name">AMBER ANNING</p>
+        </div>
+        <div class="portfolio-overlay">
+          <p class="portfolio-overlay-label">Personal Brand</p>
+          <p class="portfolio-overlay-title">AMBER ANNING</p>
+          <p class="portfolio-overlay-desc">Personal videographer handling content creation, event coverage, and brand storytelling.</p>
+        </div>
+      </div>
+
+      <!-- Professional Athlete -->
+      <div class="portfolio-item" onclick="openVideo(this)" data-youtube="">
+        <div class="portfolio-thumb">
+          <div class="portfolio-thumb-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="portfolio-label">
+          <p class="portfolio-label-cat">Professional Athlete</p>
+          <p class="portfolio-label-name">ATHLETE REEL</p>
+        </div>
+        <div class="portfolio-overlay">
+          <p class="portfolio-overlay-label">Professional Athlete</p>
+          <p class="portfolio-overlay-title">ATHLETE REEL</p>
+          <p class="portfolio-overlay-desc">Brand and performance content for professional athletes.</p>
+        </div>
+      </div>
+
+      <!-- Organization -->
+      <div class="portfolio-item" onclick="openVideo(this)" data-youtube="">
+        <div class="portfolio-thumb">
+          <div class="portfolio-thumb-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="portfolio-label">
+          <p class="portfolio-label-cat">Organization</p>
+          <p class="portfolio-label-name">CORPORATE WORK</p>
+        </div>
+        <div class="portfolio-overlay">
+          <p class="portfolio-overlay-label">Multi-Million Dollar Organization</p>
+          <p class="portfolio-overlay-title">CORPORATE WORK</p>
+          <p class="portfolio-overlay-desc">High-production video content for major organizations and brands.</p>
+        </div>
+      </div>
+
+      <!-- Organization 2 -->
+      <div class="portfolio-item" onclick="openVideo(this)" data-youtube="">
+        <div class="portfolio-thumb">
+          <div class="portfolio-thumb-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="portfolio-label">
+          <p class="portfolio-label-cat">Organization</p>
+          <p class="portfolio-label-name">BRAND CAMPAIGN</p>
+        </div>
+        <div class="portfolio-overlay">
+          <p class="portfolio-overlay-label">Brand Campaign</p>
+          <p class="portfolio-overlay-title">BRAND CAMPAIGN</p>
+          <p class="portfolio-overlay-desc">Full-service video campaign from concept through delivery.</p>
+        </div>
+      </div>
+
+      <!-- Showreel -->
+      <div class="portfolio-item featured" onclick="openVideo(this)" data-youtube="">
+        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #0D1B24 0%, #050A0E 100%);">
+          <div class="portfolio-thumb-icon" style="width:72px;height:72px;border-color:rgba(0,210,190,0.5);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="color:var(--teal)"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="portfolio-label">
+          <p class="portfolio-label-cat">Full Showreel · 2024</p>
+          <p class="portfolio-label-name" style="font-size:1.6rem">MATTINGLY MEDIA REEL</p>
+        </div>
+        <div class="portfolio-overlay">
+          <p class="portfolio-overlay-label">Full Showreel · 2024</p>
+          <p class="portfolio-overlay-title">MATTINGLY MEDIA REEL</p>
+          <p class="portfolio-overlay-desc">A full collection of work spanning broadcast, brand, and personal storytelling.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Video Modal -->
+  <div id="videoModal" style="display:none;position:fixed;inset:0;background:rgba(5,10,14,0.97);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;">
+    <button onclick="closeVideo()" style="position:absolute;top:2rem;right:2rem;background:none;border:none;color:var(--grey);font-size:1.5rem;cursor:pointer;font-family:var(--font-body);">✕ Close</button>
+    <div style="width:100%;max-width:900px;aspect-ratio:16/9;background:var(--bg-panel);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,210,190,0.2);padding:3rem;text-align:center;">
+      <div>
+        <p style="color:var(--teal);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:1rem">Add Your YouTube Link</p>
+        <p style="color:var(--light-grey);font-size:0.9rem;line-height:1.7;max-width:400px">Set the <code style="color:var(--teal)">data-youtube</code> attribute on each portfolio item to your YouTube video URL to enable playback here.</p>
+      </div>
+    </div>
+    <div id="videoFrame" style="width:100%;max-width:900px;aspect-ratio:16/9;display:none;"></div>
+  </div>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="services-inner">
+      <div class="services-left reveal">
+        <p class="section-label">What I Offer</p>
+        <h2 class="section-title"><span style="color:var(--teal)">SERVICES</span></h2>
+        <p class="services-intro">I work directly with clients — no middlemen, no handoffs. Every project gets my full attention from the first conversation to final delivery.</p>
+      </div>
+      <div class="services-list reveal" style="transition-delay:0.15s">
+        <div class="service-row">
+          <span class="service-num">01</span>
+          <div>
+            <p class="service-name">VIDEOGRAPHY</p>
+            <p class="service-desc">I handle full production myself — concept, shoot, and delivery. Every project gets broadcast-level attention regardless of size.</p>
+          </div>
+        </div>
+        <div class="service-row">
+          <span class="service-num">02</span>
+          <div>
+            <p class="service-name">EDITING</p>
+            <p class="service-desc">Post-production is where I spend a lot of my time. I edit to a standard I'd want to watch, not just to meet a deadline.</p>
+          </div>
+        </div>
+        <div class="service-row">
+          <span class="service-num">03</span>
+          <div>
+            <p class="service-name">PHOTOGRAPHY</p>
+            <p class="service-desc">Still work for events, portraits, and brand imagery. I shoot what makes sense for the story, not just what fills a frame.</p>
+          </div>
+        </div>
+        <div class="service-row">
+          <span class="service-num">04</span>
+          <div>
+            <p class="service-name">STORYTELLING</p>
+            <p class="service-desc">Every project has a narrative worth finding. I work to understand your story first, then figure out the best way to tell it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="contact-left reveal">
+        <p class="section-label">Get In Touch</p>
+        <h2 class="section-title">LET'S<br><span style="color:var(--teal)">WORK</span></h2>
+        <p class="contact-tagline">Whether you have a fully formed idea or just a direction — reach out and we'll figure out the rest.</p>
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:Ty@mattinglymedia.org" style="color:var(--light-grey);text-decoration:none;">Ty@mattinglymedia.org</a>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.15s">
+        <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" placeholder="John" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" placeholder="Smith" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project Type</label>
+            <select class="form-select form-input">
+              <option value="">Select a service...</option>
+              <option>Videography</option>
+              <option>Photography</option>
+              <option>Editing / Post-Production</option>
+              <option>Brand Storytelling</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tell Me About Your Project</label>
+            <textarea class="form-textarea" placeholder="What are you working on? Budget, timeline, vision — whatever you've got..." required></textarea>
+          </div>
+          <button type="submit" class="form-btn">Send Message</button>
+          <div class="form-success" id="formSuccess">
+            Message sent! I'll be in touch within 24 hours.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-logo">MATTINGLY<span>.</span>MEDIA</span>
+    <span class="footer-copy">© 2024 Mattingly Media · Ty@mattinglymedia.org</span>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+    document.querySelectorAll('a, button, .portfolio-item, .award-item, .service-row').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px'; cursor.style.height = '20px';
+        ring.style.width = '56px'; ring.style.height = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px'; cursor.style.height = '12px';
+        ring.style.width = '36px'; ring.style.height = '36px';
+      });
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => obs.observe(el));
+
+    // Video modal
+    function openVideo(el) {
+      const yt = el.dataset.youtube;
+      const modal = document.getElementById('videoModal');
+      const frame = document.getElementById('videoFrame');
+      const placeholder = modal.querySelector('div[style*="aspect-ratio"]');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      if (yt) {
+        let videoId = yt.match(/(?:v=|youtu\.be\/)([^&\n?#]+)/)?.[1];
+        if (videoId) {
+          frame.style.display = 'block';
+          placeholder.style.display = 'none';
+          frame.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen style="display:block;"></iframe>`;
+        }
+      } else {
+        frame.style.display = 'none';
+        placeholder.style.display = 'flex';
+      }
+    }
+    function closeVideo() {
+      const modal = document.getElementById('videoModal');
+      document.getElementById('videoFrame').innerHTML = '';
+      document.getElementById('videoFrame').style.display = 'none';
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+
+    // Contact form
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.form-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      setTimeout(() => {
+        document.getElementById('formSuccess').style.display = 'block';
+        e.target.reset();
+        btn.textContent = 'Send Message';
+        btn.disabled = false;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
